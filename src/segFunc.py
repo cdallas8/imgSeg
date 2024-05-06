@@ -10,10 +10,19 @@ from skimage import io
 from cellpose import models
 from matplotlib import pyplot as plt
 
-from struct import imgStruct
 
 ####################################################
 # Define functions
+
+class imgStruct:
+
+    def __init__(self, imgPath, maskPath, img, mask):
+        self.imgPath = imgPath
+        self.maskPath = maskPath
+        self.img = img
+        self.mask = mask
+
+
 
 # function to mask image with cellpose
 # i = image, f = file name
@@ -30,14 +39,15 @@ def imgSeg(folder, c = [0,0]):
 
     seg = []
     for i, p in zip(img, imgPath):
+        print("segmenting image: ", p)
         masks, flows, styles, diams = model.eval(i, diameter=None, channels=c)
 
         cellpose.io.save_masks(img, masks, flows, p, png = True, savedir = maskDir)
-        sp = os.path.join(maskDir, p.replace(".tiff", "_cp_mask.png"))
+        sp = os.path.join(maskDir, os.path.basename(p).replace(".tiff", "_cp_mask.png"))
 
-        i = imgStruct(p, sp)
+        i = imgStruct(p, sp, i, masks)
         seg.append(i)
-
+        print("segmentation complete")
     return seg
 
 ####################################################
