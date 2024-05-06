@@ -9,6 +9,7 @@ import numpy as np
 from skimage import io
 from cellpose import models
 from matplotlib import pyplot as plt
+import pickle
 
 
 ####################################################
@@ -28,7 +29,7 @@ class imgStruct:
 # i = image, f = file name
 def imgSeg(folder, c = [0,0]):
 
-    maskDir = "data/masks"
+    maskDir = "data/binary"
 
     # Load data - a sample of 5 images
     imgPath = [os.path.join(folder, i) for i in os.listdir(folder)][:5]
@@ -37,15 +38,26 @@ def imgSeg(folder, c = [0,0]):
     # initialize model
     model = models.Cellpose(gpu=False, model_type='cyto')
 
+    # initialize list
     seg = []
+
+    # segment images
     for i, p in zip(img, imgPath):
         print("segmenting image: ", p)
         masks, flows, styles, diams = model.eval(i, diameter=None, channels=c)
 
-        cellpose.io.save_masks(img, masks, flows, p, png = True, savedir = maskDir)
-        sp = os.path.join(maskDir, os.path.basename(p).replace(".tiff", "_cp_mask.png"))
+        # save mask & path
+        # cellpose.io.save_masks(img, masks, flows, p, png = True, savedir = maskDir)
+        # sp = os.path.join(maskDir, os.path.basename(p).replace(".tiff", "_cp_mask.png"))
 
-        i = imgStruct(p, sp, i, masks)
+        # apply threshold
+        thresh = 0
+        binary = masks > thresh
+        io.imsave(os.path.join(maskDir, os.path.basename(p).replace(".tiff", "mask_binary.png")), binary)
+        bp = os.path.join(maskDir, os.path.basename(p).replace(".tiff", "mask_binary.png"))
+
+        # create imgStruct object & append
+        i = imgStruct(p, bp, i, binary)
         seg.append(i)
         print("segmentation complete")
     return seg
@@ -57,6 +69,14 @@ path = "data/images"
 
 # Run function
 vc = imgSeg(path)
+
+# Save object
+print("saving object")
+with open("data/masks.pkl", "wb") as f:
+    pickle.dump(vc, f)
+print("object saved")
+
+####################################################
 
 # Plot img and mask side by side
 
@@ -71,5 +91,9 @@ for i in range(5):
     ax[i, 1].imshow(mask, cmap = "gray")
 
 plt.show()
+
+#  save plot
+plt.savefig("data/segmentation.png")
+plt.close()
 
 ####################################################
