@@ -20,6 +20,8 @@ path2 = "data/images"
 files = os.listdir(path)
 files2 = os.listdir(path2)
 
+dfs = []
+
 for i in range(len(files)):
     mask = io.imread((os.path.join(path, files[i])))
     img = io.imread((os.path.join(path2, files2[i])))
@@ -51,30 +53,34 @@ for i in range(len(files)):
     e = morphology.binary_erosion(binary)
 
     l = measure.label(e, background=0)
-    props = measure.regionprops(l)
+
     cell_props = measure.regionprops(l)
     cell_locs = [prop.centroid for prop in cell_props]
 
     # flatten cell_locs
     coordinates = np.array(cell_locs).flatten()
-    print(f"Coordinates: {coordinates}")
+    #print(f"Coordinates: {coordinates}")
 
-    df = polars.DataFrame({"x": coordinates[0::2], "y": coordinates[1::2]})
+    df = polars.DataFrame({"file": files2[i], "x": coordinates[0::2], "y": coordinates[1::2]})
+    dfs.append(df)
 
-    print(f"Number of objects: {len(props)}")
     # plot one area and perimeter
-    # plt.subplot(1, 3, 1)
-    # plt.imshow(img)
-    # plt.subplot(1, 3, 2)
-    # plt.imshow(e)
-    # plt.subplot(1, 3, 3)
-    # plt.imshow(l == 1)
-    # plt.show()
-    # print(f"Area: {props[0].area}, Perimeter: {props[0].perimeter}")
+    plt.subplot(1, 3, 1)
+    plt.imshow(img)
+    plt.subplot(1, 3, 2)
+    plt.imshow(e)
+    plt.subplot(1, 3, 3)
+    plt.imshow(l == 13)
+    plt.show()
+    print(f"Area: {cell_props[13].area}, Perimeter: {cell_props[13].perimeter}")
+
+
+df_complete = polars.concat(dfs)
+print(df_complete[-15:])
+
 
     # for p in props:
     #     print(f"Area: {p.area}, Perimeter: {p.perimeter}, label: {p.label}")
     #     print(f"Centroid: {p.centroid}, Bounding box: {p.bbox}")
-
 
 ####################################################
