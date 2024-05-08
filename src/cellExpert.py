@@ -39,4 +39,4 @@ for i in files:
 df = polars.concat(dfs)
 print(df[1:10])
 
-df.write_csv(graphDir + "CellMorph.csv")
+df.write_csv(graphDir + "/" + "CellMorph.csv")
