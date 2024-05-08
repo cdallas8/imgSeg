@@ -48,11 +48,11 @@ def cellSegmenter(path, chan = [0,0], verbose = False):
         plots(img, masks, mask)
         plt.show()
         # save plot
-        plt.savefig(graphDir + "/" + os.path.splitext(os.path.basename(path))[0] + ".png")
+        plt.savefig(maOutDir + "/" + os.path.splitext(os.path.basename(path))[0] + ".png")
     else:
         plots(img, masks, mask)
         # save plot
-        plt.savefig(graphDir + "/" + os.path.splitext(os.path.basename(path))[0] + ".png")
+        plt.savefig(maOutDir + "/" + os.path.splitext(os.path.basename(path))[0] + ".png")
     return mask
 
 ####################################################
