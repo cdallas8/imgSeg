@@ -9,15 +9,23 @@ pip install -r requirements.txt
 
 ### Pipeline
 
-To run the pipeline execute the following command:
-''' python
-python3
-'''
+To run the pipeline execute the 'cellExpert.py' script.
+
 The pipeline is currently set to run on a sample of 5 images. To run the pipeline on the entire dataset, remove the counter in the for loop.
 
-Below an overview of the workflow & parts still to be completed.
+### Output
+
+- Masks & binary masks are saved in the 'mask' & 'binary' forders in 'data/output'.
+
+- Plots for visualization & evaluation are saved in the 'label' & 'mask' folders in 'src/graph'.
+
+- The cell morphology data & coordinates are saved in the 'src/graph' folder => cellMorph.csv.
+
+- Images stats are saved in the 'src/graph/plots' folder.
 
 ### Workflow:
+
+Below an overview of the workflow & parts still to be completed.
 
 1. Exploratory analysis of the images => stats & pixel distribution.
 2. Data preprocessing => normalization & formatting.
